@@ -9,6 +9,7 @@ import {
   UseGuards,
   Request,
   HttpStatus,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { StocksService } from './stocks.service';
 import { CreateStockDto } from './dto/create-stock.dto';
@@ -56,17 +57,44 @@ export class StocksController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.stocksService.findOne(+id);
+  async findOne(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<GeneralResponse> {
+    const stock = await this.stocksService.findOne(id);
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Stock found',
+      data: {
+        stock,
+      },
+    };
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateStockDto: UpdateStockDto) {
-    return this.stocksService.update(+id, updateStockDto);
+  async update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateStockDto: UpdateStockDto,
+  ): Promise<GeneralResponse> {
+    await this.stocksService.update(id, updateStockDto);
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Stock with id ' + id + ' updated',
+      data: {
+        id,
+      },
+    };
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.stocksService.remove(+id);
+  @Patch(':id/disable')
+  async disable(@Param('id', ParseUUIDPipe) id: string) {
+    await this.stocksService.disable(id);
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Stock with id ' + id + ' disabled',
+      data: {
+        id,
+      },
+    };
   }
 }

@@ -1,4 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
+
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateStockDto } from './dto/create-stock.dto';
@@ -29,21 +34,49 @@ export class StocksService {
     const stocksFound = this.stockRepository.find({
       where: {
         salepointId,
+        isActive: true,
       },
     });
 
     return stocksFound;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} stock`;
+  async findOne(id: string): Promise<Stock> {
+    const stock = await this.stockRepository.findOneBy({
+      id,
+      isActive: true,
+    });
+    if (!stock) throw new NotFoundException('Stock not found');
+    return stock;
   }
 
-  update(id: number, updateStockDto: UpdateStockDto) {
-    return `This action updates a #${id} stock`;
+  async update(id: string, data: UpdateStockDto) {
+    const exist = await this.stockRepository.exist({
+      where: {
+        id,
+        isActive: true,
+      },
+    });
+    if (!exist) throw new BadRequestException('Stock not found');
+    await this.stockRepository.update(
+      {
+        id,
+      },
+      data,
+    );
+    return id;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} stock`;
+  async disable(id: string) {
+    await this.stockRepository.update(
+      {
+        id,
+      },
+      {
+        isActive: false,
+      },
+    );
+
+    return id;
   }
 }
