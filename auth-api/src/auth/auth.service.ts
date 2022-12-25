@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { BadRequestException, UnauthorizedException } from '@nestjs/common/exceptions';
+import {
+    BadRequestException,
+    UnauthorizedException,
+} from '@nestjs/common/exceptions';
 import { JwtService } from '@nestjs/jwt';
 import { RegisterUserDTO, LoginUserDTO } from 'src/users/dto/user.dto';
 import User from 'src/users/entity/user.entity';
@@ -18,44 +21,52 @@ export class AuthService {
     async validateUser(email: string, password: string): Promise<User> {
         const userFound = await this.usersService.findOne(email);
 
-        if (userFound && await bcrypt.compare(password,userFound.password)) {
+        if (userFound && (await bcrypt.compare(password, userFound.password))) {
             return userFound;
         }
         return null;
     }
 
-    async login(userData: LoginUserDTO):Promise<UserLoggedResponse> {
+    async login(userData: LoginUserDTO): Promise<UserLoggedResponse> {
+        const user = await this.validateUser(userData.email, userData.password);
 
-        const user = await this.validateUser(userData.email, userData.password)
+        if (!user) throw new UnauthorizedException('Invalid credentials');
 
-        if(!user) throw new UnauthorizedException("Invalid credentials")
-        console.log(user)
-        const payload:JwtAuthPayload = { email: user.email, id: user.id, businessId:user.businessId };
-        console.log(payload)
-        const userWithBusiness = await this.usersService.findWithBusiness(user.id)
+        const payload: JwtAuthPayload = {
+            email: user.email,
+            id: user.id,
+            businessId: user.businessId,
+        };
+        const userWithBusiness = await this.usersService.findWithBusiness(
+            user.id,
+        );
         return {
             accessToken: this.jwtService.sign(payload),
             type: 'Bearer',
-            user:userWithBusiness
+            user: userWithBusiness,
         };
     }
-    public async register(userData: RegisterUserDTO):Promise<UserLoggedResponse> {
-        const userFound = await this.usersService.findOne(userData.email)
-        if(userFound) throw new BadRequestException("User already exist")
+    public async register(
+        userData: RegisterUserDTO,
+    ): Promise<UserLoggedResponse> {
+        const userFound = await this.usersService.findOne(userData.email);
+        if (userFound) throw new BadRequestException('User already exist');
 
-        const newUser = await this.usersService.create(userData)
-        
-        const payload:JwtAuthPayload = {
-            id:newUser._id,
-            email:newUser.email,
-            businessId:newUser.businessId
-        }
-        const accessToken = this.jwtService.sign(payload)
-        const userWithBusiness = await this.usersService.findWithBusiness(userFound.id)
+        const newUser = await this.usersService.create(userData);
+
+        const payload: JwtAuthPayload = {
+            id: newUser._id,
+            email: newUser.email,
+            businessId: newUser.businessId,
+        };
+        const accessToken = this.jwtService.sign(payload);
+        const userWithBusiness = await this.usersService.findWithBusiness(
+            newUser.id,
+        );
         return {
             accessToken,
-            type:'Bearer',
-            user:userWithBusiness,
-        }
+            type: 'Bearer',
+            user: userWithBusiness,
+        };
     }
 }

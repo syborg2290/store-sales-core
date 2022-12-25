@@ -9,10 +9,9 @@ import { UtilsModule } from './utils/utils.module';
     imports: [
         BusinessesModule,
         ConfigModule.forRoot({
-            isGlobal:true
+            isGlobal: true,
         }),
         MongooseModule.forRoot(process.env.MONGODB_URI),
-        UtilsModule,
         AuthModule,
         UsersModule,
     ],

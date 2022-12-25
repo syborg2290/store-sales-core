@@ -12,11 +12,12 @@ import { JwtStrategy } from './strategies/jwt.strategy';
         UsersModule,
         PassportModule,
         JwtModule.registerAsync({
-            useFactory:()=> {
+            useFactory: () => {
                 return {
                     secret: process.env.SECRET_JWT,
-                }
-            }
+                    expiresIn: process.env.EXPIRES_IN_JWT,
+                };
+            },
         }),
     ],
     controllers: [AuthController],

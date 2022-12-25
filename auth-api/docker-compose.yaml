@@ -7,6 +7,6 @@ services:
     ports:
       - 27018:27017
     environment:
-      - MONGODB_DATABASE=businesses_database
+      - MONGODB_DATABASE=${MONGO_DB}
     volumes:
       - ./db_volume:/data/db

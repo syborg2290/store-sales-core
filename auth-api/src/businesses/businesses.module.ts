@@ -14,6 +14,6 @@ import Business, { BusinessSchema } from './entity/business.entity';
             },
         ]),
     ],
-    exports:[BusinessesService]
+    exports: [BusinessesService],
 })
 export class BusinessesModule {}

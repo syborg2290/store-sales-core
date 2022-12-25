@@ -4,10 +4,9 @@ import * as moment from 'moment';
 
 @Injectable()
 export class DateFormatService {
-    private moment: moment.Moment = moment(new Date());
+    static moment: moment.Moment = moment(new Date());
 
-    public getFormatDateForPersistenceEnvironment(): string {
+    public static getFormatDateForPersistenceEnvironment(): string {
         return this.moment.format(DateFormats.PERSISTENCE_DATETIME);
     }
 }
-

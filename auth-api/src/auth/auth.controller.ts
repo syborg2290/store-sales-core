@@ -21,28 +21,27 @@ export class AuthController {
     @HttpCode(HttpStatus.OK)
     @Post('/login')
     async login(@Body() loginData: LoginUserDTO) {
-        const responseData =  await this.authService.login(loginData);
+        const responseData = await this.authService.login(loginData);
 
         return {
-            statusCode:HttpStatus.OK,
-            message:"User logged successfully",
-            data:responseData
-        }
+            statusCode: HttpStatus.OK,
+            message: 'User logged successfully',
+            data: responseData,
+        };
     }
     @HttpCode(HttpStatus.CREATED)
     @Post('/register')
     async register(@Body() registerData: RegisterUserDTO) {
         const responseData = await this.authService.register(registerData);
         return {
-            statusCode:HttpStatus.CREATED,
-            message:"User created successfully",
-            data:responseData
-        }
+            statusCode: HttpStatus.CREATED,
+            message: 'User created successfully',
+            data: responseData,
+        };
     }
     @UseGuards(JwtAuthGuard)
     @Get('/current-user')
     getProfile(@Headers('user') user: any) {
-        console.log(user)
         return user;
     }
 }

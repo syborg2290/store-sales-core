@@ -7,5 +7,5 @@ export default class CreateBusinessDTO {
     readonly address: string;
 
     @IsString()
-    readonly cellPhone:string;
+    readonly cellPhone: string;
 }
