@@ -1,5 +1,5 @@
-import { IsEmail, IsObject, IsString, MinLength } from "class-validator";
-import CreateBusinessDTO from "src/businesses/dto/create-business.dto";
+import { IsEmail, IsObject, IsString, MinLength } from 'class-validator';
+import CreateBusinessDTO from 'src/businesses/dto/create-business.dto';
 
 export class RegisterUserDTO {
     @IsString()
@@ -14,15 +14,14 @@ export class RegisterUserDTO {
     password: string;
 
     @IsObject()
-    business:CreateBusinessDTO
+    business: CreateBusinessDTO;
 }
 
 export class LoginUserDTO {
-
     @IsString()
     @IsEmail()
     email: string;
-    
+
     @IsString()
     @MinLength(8)
     password: string;

@@ -1,50 +1,53 @@
-import { Document, Types } from "mongoose";
+import { Document, Types } from 'mongoose';
 import { Schema, SchemaFactory, Prop } from '@nestjs/mongoose';
-import { Exclude } from "class-transformer";
-import Business from "../../businesses/entity/business.entity"
- 
+import { Exclude } from 'class-transformer';
+import Business from '../../businesses/entity/business.entity';
+import { DateFormatService } from 'src/utils/services/date-format.service';
+
 @Schema()
 export default class User extends Document {
     @Prop({
-        unique:true,
-        index:true
+        unique: true,
+        index: true,
     })
-    email:string;
+    email: string;
 
     @Prop()
-    password:string;
+    password: string;
 
     @Prop()
-    name:string;
+    name: string;
 
     @Prop({
-        default:null
+        default: null,
     })
-    deletedAt:string;
-    
-    @Prop()
+    deletedAt: string;
+
+    @Prop({
+        default: DateFormatService.getFormatDateForPersistenceEnvironment(),
+    })
     createdAt: string;
 
-    @Prop()
-    updatedAt:string;
+    @Prop({
+        default: DateFormatService.getFormatDateForPersistenceEnvironment(),
+    })
+    updatedAt: string;
 
-    
     @Prop({ type: Types.ObjectId, ref: 'Business' })
-    businessId:string;
+    businessId: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
 
-
 UserSchema.set('toJSON', {
-    transform:(document, user)=> {
-        user.id = user._id
-        user.business = user.businessId
-        delete user['_id']
-        delete user['__v']
-        delete user['password']
-        delete user['deletedAt']
-        delete user['businessId']
-        return user
-    }
-})
+    transform: (document, user) => {
+        user.id = user._id;
+        user.business = user.businessId;
+        delete user['_id'];
+        delete user['__v'];
+        delete user['password'];
+        delete user['deletedAt'];
+        delete user['businessId'];
+        return user;
+    },
+});

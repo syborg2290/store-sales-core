@@ -9,8 +9,7 @@ import { SalePointsModule } from 'src/salepoints/salepoints.module';
 
 @Module({
     providers: [UsersService],
-    imports:[
-        UtilsModule,
+    imports: [
         BusinessesModule,
         SalePointsModule,
         MongooseModule.forFeature([
@@ -18,8 +17,7 @@ import { SalePointsModule } from 'src/salepoints/salepoints.module';
                 name: User.name,
                 schema: UserSchema,
             },
-        ])
-        
+        ]),
     ],
     exports: [UsersService],
     controllers: [UsersController],

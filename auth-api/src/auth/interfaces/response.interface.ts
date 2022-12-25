@@ -1,8 +1,7 @@
-import User from "src/users/entity/user.entity";
+import User from 'src/users/entity/user.entity';
 
-export interface UserLoggedResponse  {
-    accessToken:string;
-    type:string;
-    user:User
-
+export interface UserLoggedResponse {
+    accessToken: string;
+    type: string;
+    user: User;
 }
