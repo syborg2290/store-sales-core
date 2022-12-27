@@ -1,4 +1,6 @@
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
@@ -9,6 +11,10 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { StocksModule } from './stocks/stocks.module';
 import { DataSource } from 'typeorm';
 import { Stock } from './stocks/entities/stock.entity';
+import { S3Module } from 'nestjs-s3';
+import { SimpleStorageServiceModule } from './simple-storage-service/simple-storage-service.module';
+import { StockImage } from './stocks/entities/stock-image.entity';
+import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 
 @Module({
   imports: [
@@ -26,12 +32,21 @@ import { Stock } from './stocks/entities/stock.entity';
       database: process.env.POSTGRES_DB,
       synchronize: true,
       autoLoadEntities: true,
-      entities: [Stock],
+      entities: [Stock, StockImage],
     }),
     StocksModule,
+    S3Module,
+    SimpleStorageServiceModule,
   ],
   controllers: [AppController],
-  providers: [AppService, JwtStrategy],
+  providers: [
+    AppService,
+    JwtStrategy,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}

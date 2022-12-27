@@ -1,5 +1,6 @@
 import { DateFormatService } from 'src/utils/services/date-format.service';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { StockImage } from './stock-image.entity';
 
 @Entity({
   name: 'stocks',
@@ -53,4 +54,7 @@ export class Stock {
     default: DateFormatService.getFormatDateForPersistenceEnvironment(),
   })
   updatedAt: string;
+
+  @OneToMany(() => StockImage, (stockImage) => stockImage.stock)
+  images?: StockImage[];
 }

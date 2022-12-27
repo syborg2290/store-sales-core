@@ -1,0 +1,19 @@
+org: santiagojv1303
+app: size-image-generator
+service: size-image-generator
+useDotenv: true
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+
+functions:
+  processImage:
+    handler: handler.processImage
+    events:
+      - s3:
+          bucket: ${env:AWS_S3_BUCKET}
+          event: s3:ObjectCreated:*
+          existing: true
+          forceDeploy: true
