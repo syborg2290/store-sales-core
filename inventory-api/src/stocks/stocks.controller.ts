@@ -41,7 +41,7 @@ export class StocksController {
       },
     };
   }
-
+  @Public()
   @Get()
   async findAll(@Request() request: AuthRequest): Promise<GeneralResponse> {
     const { salepointId } = request.user;
@@ -83,7 +83,7 @@ export class StocksController {
       },
     };
   }
-  
+
   @Public()
   @UseGuards(ApikeyAuth)
   @Patch('/image/:id')
