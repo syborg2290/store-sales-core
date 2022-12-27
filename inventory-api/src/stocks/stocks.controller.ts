@@ -5,7 +5,6 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
   UseGuards,
   Request,
   HttpStatus,
@@ -13,13 +12,13 @@ import {
 } from '@nestjs/common';
 import { StocksService } from './stocks.service';
 import { CreateStockDto } from './dto/create-stock.dto';
-import { UpdateStockDto } from './dto/update-stock.dto';
-import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
-import { AuthRequest } from 'src/interfaces/jwt-payload.interface';
+import { UpdateStockDto, UpdateStockImageDto } from './dto/update-stock.dto';
+import { Public } from 'src/common/guards/jwt-auth.guard';
+import { AuthRequest } from 'src/common/interfaces/jwt-payload.interface';
 import { GeneralResponse } from 'src/common/interfaces/general-response.interface';
+import { ApikeyAuth } from 'src/common/guards/api-key-auth.guard';
 
 @Controller('stocks')
-@UseGuards(JwtAuthGuard)
 export class StocksController {
   constructor(private readonly stocksService: StocksService) {}
 
@@ -73,12 +72,29 @@ export class StocksController {
   @Patch(':id')
   async update(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() updateStockDto: UpdateStockDto,
+    @Body() data: UpdateStockDto,
   ): Promise<GeneralResponse> {
-    await this.stocksService.update(id, updateStockDto);
+    await this.stocksService.update(id, data);
     return {
       statusCode: HttpStatus.OK,
       message: 'Stock with id ' + id + ' updated',
+      data: {
+        id,
+      },
+    };
+  }
+  
+  @Public()
+  @UseGuards(ApikeyAuth)
+  @Patch('/image/:id')
+  async updateStockImage(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() data: UpdateStockImageDto,
+  ): Promise<GeneralResponse> {
+    await this.stocksService.updateStockImage(id, data);
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Stock image with id ' + id + ' updated',
       data: {
         id,
       },

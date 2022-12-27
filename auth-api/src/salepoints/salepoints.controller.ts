@@ -8,7 +8,6 @@ import {
     Param,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { AuthService } from 'src/auth/auth.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import JwtAuthPayload, {
     AuthRequest,

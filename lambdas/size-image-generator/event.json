@@ -1,0 +1,38 @@
+{
+    "Records": [
+      {
+        "eventVersion": "2.0",
+        "eventSource": "aws:s3",
+        "awsRegion": "us-east-1",
+        "eventTime": "1970-01-01T00:00:00.000Z",
+        "eventName": "ObjectCreated:Put",
+        "userIdentity": {
+          "principalId": "EXAMPLE"
+        },
+        "requestParameters": {
+          "sourceIPAddress": "127.0.0.1"
+        },
+        "responseElements": {
+          "x-amz-request-id": "EXAMPLE123456789",
+          "x-amz-id-2": "EXAMPLE123/5678abcdefghijklambdaisawesome/mnopqrstuvwxyzABCDEFGH"
+        },
+        "s3": {
+          "s3SchemaVersion": "1.0",
+          "configurationId": "testConfigRule",
+          "bucket": {
+            "name": "stores-core",
+            "ownerIdentity": {
+              "principalId": "EXAMPLE"
+            },
+            "arn": "arn:aws:s3:::example-bucket"
+          },
+          "object": {
+            "key": "salepoints%2F63a90cfa8e2eeb25b90a0039%2Fstocks%2Fsizes%2Foriginal%2F2240a549-5dac-4dd9-838f-7dd308de71c1---c0ea13e6-6e44-430c-9357-3a9d88590eb1---754c3a25-c7ae-4846-877b-3c92008ae9cd.jpg",
+            "size": 1024,
+            "eTag": "0123456789abcdef0123456789abcdef",
+            "sequencer": "0A1B2C3D4E5F678901"
+          }
+        }
+      }
+    ]
+  }
