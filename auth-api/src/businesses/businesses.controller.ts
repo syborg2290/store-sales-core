@@ -16,16 +16,17 @@ import {
 import CreateBusinessDTO from './dto/create-business.dto';
 
 import { BusinessesService } from './businesses.service';
+import { GeneralResponse } from 'src/common/interfaces/general-response.interface';
 
 @Controller('businesses')
 export class BusinessesController {
     constructor(private readonly businessService: BusinessesService) {}
 
     @Get('/:id')
-    public getBusiness(
+    public async getBusiness(
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
-    ): Object {
-        const businessFound = this.businessService.findById(id);
+    ): Promise<GeneralResponse> {
+        const businessFound = await this.businessService.findById(id);
         if (!businessFound)
             throw new HttpException(
                 `Business with id ${id} not found`,
@@ -39,30 +40,5 @@ export class BusinessesController {
                 business: businessFound,
             },
         };
-    }
-
-    @HttpCode(HttpStatus.CREATED)
-    @Post()
-    public async createBusiness(
-        @Body() businessData: CreateBusinessDTO,
-    ): Promise<Object> {
-        try {
-            const newBusiness = await this.businessService.create(businessData);
-            return {
-                statusCode: HttpStatus.CREATED,
-                message: 'Business created',
-                data: {
-                    business: newBusiness,
-                },
-            };
-        } catch (error) {
-            if (error.code === 11000) {
-                throw new HttpException(
-                    'Business name already exist',
-                    HttpStatus.BAD_REQUEST,
-                );
-            }
-            throw new InternalServerErrorException();
-        }
     }
 }

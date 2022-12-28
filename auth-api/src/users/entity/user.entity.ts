@@ -1,7 +1,9 @@
-import { Document, Types } from 'mongoose';
+import mongoose, { Document, HydratedDocument, Types } from 'mongoose';
 import { Schema, SchemaFactory, Prop } from '@nestjs/mongoose';
 import { DateFormatService } from 'src/utils/services/date-format.service';
+import Business from 'src/businesses/entity/business.entity';
 
+export type UserDocument = HydratedDocument<User>;
 @Schema()
 export default class User extends Document {
     @Prop({
@@ -22,17 +24,14 @@ export default class User extends Document {
     deletedAt: string;
 
     @Prop({
-        default: DateFormatService.getFormatDateForPersistenceEnvironment(),
+        default: DateFormatService.getFormattedDateForPersistenceEnvironment(),
     })
     createdAt: string;
 
     @Prop({
-        default: DateFormatService.getFormatDateForPersistenceEnvironment(),
+        default: DateFormatService.getFormattedDateForPersistenceEnvironment(),
     })
     updatedAt: string;
-
-    @Prop({ type: Types.ObjectId, ref: 'Business' })
-    businessId: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
