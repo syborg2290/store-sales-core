@@ -47,7 +47,7 @@ export class SalepointsController {
         @Param('salepointId') salepointId: string,
     ): Promise<GeneralResponse> {
         const { businessId, email, id } = request.user;
-        const salepointsFound = await this.salepointsService.findById(
+        const salepointFound = await this.salepointsService.findById(
             salepointId,
         );
         const payload: JwtAuthPayload = {
@@ -65,7 +65,7 @@ export class SalepointsController {
             statusCode: HttpStatus.OK,
             message: 'Salepoint selected',
             data: {
-                salepoints: salepointsFound,
+                salepoint: salepointFound,
                 accessToken: token,
                 type: 'Bearer',
             },

@@ -6,7 +6,7 @@ import * as moment from 'moment';
 export class DateFormatService {
     static moment: moment.Moment = moment(new Date());
 
-    public static getFormatDateForPersistenceEnvironment(): string {
+    public static getFormattedDateForPersistenceEnvironment(): string {
         return this.moment.format(DateFormats.PERSISTENCE_DATETIME);
     }
 }

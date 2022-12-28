@@ -29,44 +29,45 @@ export class AuthService {
 
     async login(userData: LoginUserDTO): Promise<UserLoggedResponse> {
         const user = await this.validateUser(userData.email, userData.password);
-
+        console.log(user);
         if (!user) throw new UnauthorizedException('Invalid credentials');
 
+        const { user: userFound, business } =
+            await this.usersService.findOneWithBusiness(user.id);
         const payload: JwtAuthPayload = {
-            email: user.email,
-            id: user.id,
-            businessId: user.businessId,
+            email: userFound.email,
+            id: userFound.id,
+            businessId: business.id,
         };
-        const userWithBusiness = await this.usersService.findWithBusiness(
-            user.id,
-        );
         return {
             accessToken: this.jwtService.sign(payload),
             type: 'Bearer',
-            user: userWithBusiness,
+            user: userFound,
+            business: business,
         };
     }
     public async register(
         userData: RegisterUserDTO,
     ): Promise<UserLoggedResponse> {
         const userFound = await this.usersService.findOne(userData.email);
+
         if (userFound) throw new BadRequestException('User already exist');
 
         const newUser = await this.usersService.create(userData);
-
-        const payload: JwtAuthPayload = {
-            id: newUser._id,
-            email: newUser.email,
-            businessId: newUser.businessId,
-        };
-        const accessToken = this.jwtService.sign(payload);
-        const userWithBusiness = await this.usersService.findWithBusiness(
+        const { user, business } = await this.usersService.findOneWithBusiness(
             newUser.id,
         );
+        const payload: JwtAuthPayload = {
+            id: user._id,
+            email: user.email,
+            businessId: business.id,
+        };
+        const accessToken = this.jwtService.sign(payload);
         return {
             accessToken,
             type: 'Bearer',
-            user: userWithBusiness,
+            user: newUser,
+            business: business,
         };
     }
 }

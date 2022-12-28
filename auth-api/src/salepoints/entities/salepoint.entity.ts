@@ -1,10 +1,11 @@
-import { Document, Types } from 'mongoose';
+import mongoose, { Document, Types, HydratedDocument } from 'mongoose';
 import { Schema, SchemaFactory, Prop } from '@nestjs/mongoose';
-import Business from '../../businesses/entity/business.entity';
 import { DateFormatService } from 'src/utils/services/date-format.service';
+import Business from 'src/businesses/entity/business.entity';
 
+export type SalepointDocument = HydratedDocument<Salepoint>;
 @Schema()
-export default class SalePoint extends Document {
+export default class Salepoint extends Document {
     @Prop({
         index: true,
     })
@@ -15,26 +16,23 @@ export default class SalePoint extends Document {
     address: string;
 
     @Prop({
-        default: DateFormatService.getFormatDateForPersistenceEnvironment(),
+        default: DateFormatService.getFormattedDateForPersistenceEnvironment(),
     })
     createdAt: string;
 
     @Prop({
-        default: DateFormatService.getFormatDateForPersistenceEnvironment(),
+        default: DateFormatService.getFormattedDateForPersistenceEnvironment(),
     })
     updatedAt: string;
 
     @Prop()
     deletedAt: string;
 
-    @Prop({
-        type: Types.ObjectId,
-        ref: 'Business',
-    })
-    businessId: string;
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Business' })
+    business: Business;
 }
 
-export const SalePointSchema = SchemaFactory.createForClass(SalePoint);
+export const SalePointSchema = SchemaFactory.createForClass(Salepoint);
 
 SalePointSchema.set('toJSON', {
     transform: (document, salePoint) => {
